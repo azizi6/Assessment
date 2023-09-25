@@ -1,0 +1,63 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lambda Function Demo</title>
+</head>
+<body>
+    <h1>Address Processor</h1>
+    <label for="address">Enter Address:</label>
+    <input type="text" id="address" placeholder="Enter address...">
+    <button id="submitButton">Submit</button>
+    <div id="result"></div>
+
+    <script>
+        const submitButton = document.getElementById('submitButton');
+        const addressInput = document.getElementById('address');
+        const resultDiv = document.getElementById('result');
+
+        submitButton.addEventListener('click', () => {
+            const address = addressInput.value;
+            if (!address) {
+                resultDiv.innerHTML = '<p>Please enter an address.</p>';
+                return;
+            }
+
+            // Lambda function URL (replace with your actual Lambda function URL)
+            const lambdaUrl = 'https://havewdndiwa4gqfhah6g4wukb40ljbkm.lambda-url.ap-southeast-2.on.aws/';
+            // Convert the address to uppercase
+            const uppercaseAddress = address.toUpperCase();
+            // Construct the URL with the address query parameter
+            const url = `${lambdaUrl}/?address=${encodeURIComponent(uppercaseAddress)}`;
+
+            // Make an HTTP GET request to the Lambda function URL
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.coordinates && data.coordinates.length === 3) {
+                        const latitude = data.coordinates[0];
+                        const longitude = data.coordinates[1];
+                        const suburbName = data.suburbName;
+                        const electoralDistrictName = data.districtName;
+
+                        resultDiv.innerHTML = `
+                            <ul>
+                                <li>Location (latitude and longitude): ${latitude}, ${longitude}</li>
+                                <li>Suburb name: ${suburbName}</li>
+                                <li>State Electoral District name: ${electoralDistrictName}</li>
+                            </ul>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = '<p>Error: Invalid response from the Lambda function.</p>';
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                });
+        });
+    </script>
+</body>
+</html>
