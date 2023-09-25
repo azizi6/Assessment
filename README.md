@@ -1,5 +1,3 @@
-Sure, here's an updated README file with additional information for the HTML page, including how to display the address details:
-
 
 This guide will walk you through deploying the AWS CDK stack and updating the Lambda function URL in your HTML file, which includes a form to input an address and displays address details upon submission.
 
